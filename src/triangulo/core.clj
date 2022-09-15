@@ -24,6 +24,13 @@
       (/ (- (+ (pow-2 b) (pow-2 c)) (pow-2 a))
          (apply * [2 b c])))))
 
+(defn calc-angulos-arredondados
+  "Calcula os 3 ângulos arredondados de um triângulo, dado A B C."
+  [a b c]
+  [(math/round (calc-angulo a b c))
+    (math/round (calc-angulo b c a))
+    (math/round (calc-angulo c a b))])
+
 (defn calc-area
   "TODO: Calcula a área de um triângulo usando a formula de Heron."
   [a b c]
@@ -54,26 +61,25 @@
   "TODO: Verifica se é um triangulo retangulo, cujos angulos são iguais a 90o.
   O resultado não é exato, dado que cada angulo é arredondado utilizando clojure.math/round."
   [a b c]
-  (boolean (some #(= % 90)
-                 [(math/round (calc-angulo a b c))
-                  (math/round (calc-angulo b c a))
-                  (math/round (calc-angulo c a b))])))
+  (boolean
+    (some
+      #(= % 90)
+      (calc-angulos-arredondados a b c))))
 
 (defn obtuso?
   "TODO: Verifica se o triangulo é obtuso, tendo algum angulo >90o."
   [a b c]
-  (boolean (some #(> % 90)
-                 [(math/round (calc-angulo a b c))
-                  (math/round (calc-angulo b c a))
-                  (math/round (calc-angulo c a b))])))
+  (boolean
+    (some
+      #(> % 90)
+      (calc-angulos-arredondados a b c))))
 
 (defn agudo?
   "TODO: Verifica se o triangulo é obtuso, tendo todos os angulos <90o."
   [a b c]
-  (every? #(< % 90)
-          [(math/round (calc-angulo a b c))
-           (math/round (calc-angulo b c a))
-           (math/round (calc-angulo c a b))]))
+  (every?
+    #(< % 90)
+    (calc-angulos-arredondados a b c)))
 
 (defn gerar-dados-completos
   [a b c]
