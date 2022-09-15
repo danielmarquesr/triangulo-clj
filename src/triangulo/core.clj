@@ -11,67 +11,85 @@
   [a b c]
   )
 
+(defn pow-2
+  "Calculate pow 2 from a number."
+  [num]
+  (math/pow num 2))
+
 (defn calc-angulo
   "TODO: Calcula o ângulo ∠A, dado A B C."
   [a b c]
-  )
+  (math/to-degrees
+    (math/acos
+      (/ (- (+ (pow-2 b) (pow-2 c)) (pow-2 a))
+         (apply * [2 b c])))))
 
 (defn calc-area
   "TODO: Calcula a área de um triângulo usando a formula de Heron."
   [a b c]
-  )
+  (let [s (/ (calc-perimetro a b c) 2)]
+    (math/sqrt (apply * [s (- s a) (- s b) (- s c)]))))
 
 (defn calc-altura
   "TODO: Calcula altura de A, dado a AREA."
   [a area]
-  )
+  (/ (* 2 area) a))
 
 (defn equilateral?
   "TODO: Verifica se o triangulo é equilateral"
   [a b c]
-  )
+  (= a b c))
 
 (defn isosceles?
   "TODO: Verifica se pelo menos dois lados sao iguais."
   [a b c]
-  )
+  (or (= a b) (= a c) (= b c)))
 
 (defn escaleno?
   "TODO: Verifica se os lados dos triangulos sao diferentes entre si."
   [a b c]
-  )
+  (and (not= a b) (not= a c) (not= b c)))
 
 (defn retangulo?
   "TODO: Verifica se é um triangulo retangulo, cujos angulos são iguais a 90o.
   O resultado não é exato, dado que cada angulo é arredondado utilizando clojure.math/round."
   [a b c]
-  )
+  (boolean (some #(= % 90)
+                 [(math/round (calc-angulo a b c))
+                  (math/round (calc-angulo b c a))
+                  (math/round (calc-angulo c a b))])))
 
 (defn obtuso?
   "TODO: Verifica se o triangulo é obtuso, tendo algum angulo >90o."
   [a b c]
-  )
+  (boolean (some #(> % 90)
+                 [(math/round (calc-angulo a b c))
+                  (math/round (calc-angulo b c a))
+                  (math/round (calc-angulo c a b))])))
 
 (defn agudo?
-  "TODO: Verifica se o triangulo é obtuso, tendo algum angulo >90o."
+  "TODO: Verifica se o triangulo é obtuso, tendo todos os angulos <90o."
   [a b c]
-  )
+  (every? #(< % 90)
+          [(math/round (calc-angulo a b c))
+           (math/round (calc-angulo b c a))
+           (math/round (calc-angulo c a b))]))
 
 (defn gerar-dados-completos
   [a b c]
   (let [area (calc-area a b c)]
-        {:lados [a b c]
-         :retagulo (retangulo? a b c)
-         :obtuso (obtuso? a b c)
-         :agudo (agudo? a b c)
-         :escaleno (escaleno? a b c)
-         :isosceles (isosceles? a b c)
-         :equilateral (equilateral? a b c)
-         :area area
-         :altura [(calc-altura a area)
-                  (calc-altura b area)
-                  (calc-altura c area)]
-         :angulos [(calc-angulo a b c)
+    {:lados       [a b c]
+     :retagulo    (retangulo? a b c)
+     :obtuso      (obtuso? a b c)
+     :agudo       (agudo? a b c)
+     :escaleno    (escaleno? a b c)
+     :isosceles   (isosceles? a b c)
+     :equilateral (equilateral? a b c)
+     :area        area
+     :altura      [(calc-altura a area)
+                   (calc-altura b area)
+                   (calc-altura c area)]
+     :angulos     [(calc-angulo a b c)
                    (calc-angulo b c a)
                    (calc-angulo c a b)]}))
 
