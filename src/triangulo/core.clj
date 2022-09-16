@@ -6,30 +6,29 @@
   [a b c]
   (+ a b c))
 
+(defn pow-2
+  "Calcula a potencia de 2 de um dado numero."
+  [num]
+  (math/pow num 2))
+
 (defn calc-radianos
   "TODO: Calcular radianos dado lados a b e c de um triangulo"
   [a b c]
-  )
-
-(defn pow-2
-  "Calculate pow 2 from a number."
-  [num]
-  (math/pow num 2))
+  (math/acos
+    (/ (- (+ (pow-2 b) (pow-2 c)) (pow-2 a))
+       (apply * [2 b c]))))
 
 (defn calc-angulo
   "TODO: Calcula o ângulo ∠A, dado A B C."
   [a b c]
-  (math/to-degrees
-    (math/acos
-      (/ (- (+ (pow-2 b) (pow-2 c)) (pow-2 a))
-         (apply * [2 b c])))))
+  (math/to-degrees (calc-radianos a b c)))
 
 (defn calc-angulos-arredondados
   "Calcula os 3 ângulos arredondados de um triângulo, dado A B C."
   [a b c]
   [(math/round (calc-angulo a b c))
-    (math/round (calc-angulo b c a))
-    (math/round (calc-angulo c a b))])
+   (math/round (calc-angulo b c a))
+   (math/round (calc-angulo c a b))])
 
 (defn calc-area
   "TODO: Calcula a área de um triângulo usando a formula de Heron."
